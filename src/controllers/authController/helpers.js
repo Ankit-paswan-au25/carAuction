@@ -1,5 +1,6 @@
 const asyncErrorCatcher = require('../../utils/asyncErrorhandler');
 const valid = require('validator');
+const jwt = require('jsonwebtoken')
 exports.reqValidator = asyncErrorCatcher(async (req) => {
     let routePath = `${req.route.path}`.replace("/", "");
     const { username, password, confirmPassword, email } = req.body
@@ -60,8 +61,8 @@ exports.reqValidator = asyncErrorCatcher(async (req) => {
 
 });
 
-exports.jwtToken = (userData) => {
-    const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '1h' })
+exports.jwtToken = async (userData) => {
+    const token = await jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '1h' })
     return token
 }
 

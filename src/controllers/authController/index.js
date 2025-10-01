@@ -1,6 +1,10 @@
 const asyncErrorCatcher = require('../../utils/asyncErrorhandler');
 const logicHelper = require('./helpers')
 const AppError = require('../../utils/appError');
+const valid = require('validator');
+const bycrpt = require('bcryptjs');
+const User = require('../../models/usersModel')
+
 
 
 const register = asyncErrorCatcher(async (req, res, next) => {
@@ -46,12 +50,19 @@ const register = asyncErrorCatcher(async (req, res, next) => {
         dbUser._id = dbUser._id.toString();
     }
 
+
     //creating token
-    const token = logicHelper.jwtToken(dbUser._id)
+    const payloadtoken = {
+        userId: dbUser._id,
+        name: dbUser.name,
+        email: dbUser.email
+
+    }
+    const token = await logicHelper.jwtToken(payloadtoken)
 
     res.status(201).send({
         status: "Success",
-        token
+        token: token
     })
 
 
@@ -68,25 +79,27 @@ const login = asyncErrorCatcher(async (req, res, next) => {
 
     const dbUser = await User.findOne({ email: email }).select('+password');
 
+
     if (!dbUser) {
         return next(new AppError('User not Found', 404));
     }
 
     const isValidPassword = await bycrpt.compare(password, dbUser.password)
 
+
     if (!isValidPassword) {
         return next(new AppError('Authentication Failed', 401));
     }
 
     if (dbUser) {
-        return dbUser._id = dbUser._id.toString();
+        dbUser._id = dbUser._id.toString();
     }
 
-    const token = logicHelper.jwtToken({ user: dbUser._id, email: dbUser.email })
+    const token = await logicHelper.jwtToken({ user: dbUser._id, email: dbUser.email })
 
     res.status(200).send({
         status: "success",
-        token
+        token: token
     })
 
 
