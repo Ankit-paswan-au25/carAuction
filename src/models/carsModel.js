@@ -5,24 +5,56 @@ const validator = require('validator');
 
 const carsSchema = mongoose.Schema(
     {
-        name: {
+        carName: {
             type: String,
             required: [true, "Please enter your name"]
         },
-        email: {
+        Brand: {
             type: String,
-            required: [true, 'Please Provide email'],
-            unique: true,
-            lowerCase: true,
-            validate: [validator.isEmail, 'Please provide valid email']
+            required: [true, "Please enter your name"]
+        },
+        makeYear: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        carType: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        carFeature: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        regYear: {
+            type: String,
+            required: [false, "Please enter your name"]
+        },
+        fuel: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        kmDriven: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        transmission: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
+        engineCapicity: {
+            type: String,
+            required: [true, "Please enter your name"]
         },
         auctionId: {
-            type: String,
+            type: Array,
             required: [false, 'Please Provide password'],
             minlength: 8,
             select: false
         },
-
+        creatorId: {
+            type: String,
+            required: [true, "Please enter your name"]
+        },
         isDeleted: {
             type: Boolean,
             dafault: false

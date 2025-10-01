@@ -5,24 +5,22 @@ const validator = require('validator');
 
 const dealerSchema = mongoose.Schema(
     {
-        name: {
+        storeName: {
             type: String,
             required: [true, "Please enter your name"]
         },
-        email: {
+        storeAddress: {
             type: String,
-            required: [true, 'Please Provide email'],
-            unique: true,
-            lowerCase: true,
-            validate: [validator.isEmail, 'Please provide valid email']
+            required: [true, "Please enter your name"]
         },
-        auctionId: {
+        storeAddPincode: {
             type: String,
-            required: [false, 'Please Provide password'],
-            minlength: 8,
-            select: false
+            required: [true, "Please enter your name"]
         },
-
+        totalAuction: {
+            type: Array,
+            required: false
+        },
         isDeleted: {
             type: Boolean,
             dafault: false

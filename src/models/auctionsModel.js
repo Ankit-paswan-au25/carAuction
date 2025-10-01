@@ -5,23 +5,35 @@ const validator = require('validator');
 
 const auctionSchema = mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: [true, "Please enter your name"]
+        carsInAuction: {
+            type: Array,
+            required: [true, "more than one car is required"]
         },
-        email: {
+        dealerId: {
             type: String,
-            required: [true, 'Please Provide email'],
-            unique: true,
-            lowerCase: true,
-            validate: [validator.isEmail, 'Please provide valid email']
+            required: [true, 'Auction creator is important'],
         },
-        auctionId: {
+        numberOfParticipants: {
             type: String,
-            required: [false, 'Please Provide password'],
-            minlength: 8,
-            select: false
+            required: [false, 'Auction creator is important'],
         },
+        totalBids: {
+            type: String,
+            required: [false, 'Auction creator is important'],
+        },
+        closureBid: {
+            type: String,
+            required: [false, 'Auction creator is important'],
+        },
+        auctionDate: {
+            type: String,
+            required: [false, 'Auction creator is important'],
+        },
+        AutionTime: {
+            type: String,
+            required: [false, 'Auction creator is important'],
+        },
+
 
         isDeleted: {
             type: Boolean,
