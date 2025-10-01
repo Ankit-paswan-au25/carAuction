@@ -75,7 +75,7 @@ module.exports = (err, req, res, next) => {
         if (error.name === 'JsonWebTokenError') error = jwtTokenErrorHandler()
         if (error.code === 11000) error = DbDuplicateErrorHandler(error)
 
-        sendProdErr(err, res)
+        sendProdErr(error, res)
 
     }
 }
