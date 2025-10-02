@@ -6,14 +6,14 @@ const User = require('../models/usersModel')
 
 
 const authGuard = async (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1]
+    let checkToken = req.headers.authorization
 
 
-    if (!token) {
+    if (!checkToken) {
 
         return next(new AppError('Please  login again', 403))
     }
-
+    let token = req.headers.authorization.split(" ")[1]
 
     const decodedToken = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 

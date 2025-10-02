@@ -15,7 +15,7 @@ const bidSchema = mongoose.Schema(
         },
         bidAmount: {
             type: String,
-            required: [false, 'Auction creator is important'],
+            required: [true, 'Auction creator is important'],
         },
         finalBid: {
             type: String,
@@ -32,5 +32,5 @@ const bidSchema = mongoose.Schema(
     }
 );
 
-const auctions = mongoose.model("auctions", auctionSchema);
-module.exports = auctions;
+const bid = mongoose.model("bid", bidSchema);
+module.exports = bid;

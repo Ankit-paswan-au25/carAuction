@@ -27,14 +27,12 @@ const auctionSchema = mongoose.Schema(
         },
         auctionDate: {
             type: String,
-            required: [false, 'Auction creator is important'],
+            required: [true, 'Auction creator is important'],
         },
-        AutionTime: {
+        autionTime: {
             type: String,
-            required: [false, 'Auction creator is important'],
+            required: [true, 'Auction creator is important'],
         },
-
-
         isDeleted: {
             type: Boolean,
             dafault: false

@@ -3,6 +3,7 @@ const validator = require('validator');
 
 
 
+
 const dealerSchema = mongoose.Schema(
     {
         storeName: {
@@ -20,6 +21,16 @@ const dealerSchema = mongoose.Schema(
         totalAuction: {
             type: Array,
             required: false
+        },
+        totalSold: {
+            type: Array,
+            required: false
+        },
+        totalEarning: {
+            type: Number,
+        },
+        status: {
+            type: String,
         },
         isDeleted: {
             type: Boolean,
