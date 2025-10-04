@@ -17,7 +17,7 @@ const authGuard = async (req, res, next) => {
 
     const decodedToken = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
-    let authUser = await User.findById(decodedToken.user).lean();
+    let authUser = await User.findById(decodedToken.userId).lean();
 
     if (!authUser) {
         return next(new AppError('Please  login again', 403))

@@ -1,6 +1,7 @@
 const asyncErrHandler = require('../../utils/asyncErrorhandler');
 const AppError = require('../../utils/appError')
 const dealers = require('../../models/dealersModel')
+const User = require('../../models/usersModel')
 
 const createDealers = asyncErrHandler(async (req, res, next) => {
     const { storeName, storeAddress, storeAddPincode } = req.body
@@ -11,9 +12,13 @@ const createDealers = asyncErrHandler(async (req, res, next) => {
         storeName: storeName,
         storeAddress: storeAddress,
         storeAddPincode: storeAddPincode,
+        userId: req.user._id
     }
 
     const createDealers = await dealers.create(newDealer)
+
+    //updating user role to dealer
+    await User.findByIdAndUpdate(req.user._id, { roleId: 2 }, { new: true })
 
     res.status(201).json({
         success: true,

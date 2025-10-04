@@ -14,6 +14,11 @@ const dealerSchema = mongoose.Schema(
             type: String,
             required: [true, "Please enter your name"]
         },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
         storeAddPincode: {
             type: String,
             required: [true, "Please enter your name"]
