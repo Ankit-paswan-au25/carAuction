@@ -3,6 +3,7 @@ const AppError = require('../../utils/appError')
 const dealers = require('../../models/dealersModel')
 const User = require('../../models/usersModel')
 
+//create dealer
 const createDealers = asyncErrHandler(async (req, res, next) => {
     const { storeName, storeAddress, storeAddPincode } = req.body
     if (!storeName || !storeAddress || !storeAddPincode) {
@@ -18,7 +19,7 @@ const createDealers = asyncErrHandler(async (req, res, next) => {
     const createDealers = await dealers.create(newDealer)
 
     //updating user role to dealer
-    await User.findByIdAndUpdate(req.user._id, { roleId: 2 }, { new: true })
+    await User.findByIdAndUpdate(req.user._id, { roleId: 2, dealerId: createDealers._id }, { new: true })
 
     res.status(201).json({
         success: true,
@@ -27,6 +28,8 @@ const createDealers = asyncErrHandler(async (req, res, next) => {
     })
 
 })
+
+//get all dealers
 const getAllDealers = asyncErrHandler(async (req, res, next) => {
     const allDealers = await dealers.find()
     if (!allDealers) {
@@ -37,6 +40,9 @@ const getAllDealers = asyncErrHandler(async (req, res, next) => {
         allDealers
     })
 })
+
+
+//get single dealer
 const getSingleDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
     const singleDealer = await dealers.findById(dealerId)
@@ -48,6 +54,8 @@ const getSingleDealers = asyncErrHandler(async (req, res, next) => {
         singleDealer
     })
 })
+
+//update dealer
 const updateDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
 
@@ -79,6 +87,8 @@ const updateDealers = asyncErrHandler(async (req, res, next) => {
 
 
 })
+
+//delete dealer
 const deleteDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
     const deletedDealer = await dealers.findByIdAndDelete(dealerId)

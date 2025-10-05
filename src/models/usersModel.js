@@ -25,6 +25,10 @@ const UserSchema = mongoose.Schema(
         passwordChangeAt: Date,
         passwordResetToken: String,
         passwordResetTokeExpiresIn: Date,
+        dealerId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'dealers',
+        },
         roleId: {
             type: Number, //where 1 == superAdmin, 2==Admin ,3 == normalUser 
             default: 3
