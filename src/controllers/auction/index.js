@@ -6,19 +6,27 @@ const Auction = require('../../models/auctionsModel')
 
 //create Auction
 const createAuctions = asyncErrHandler(async (req, res, next) => {
-
     const { carsInAuction, numberOfParticipants, auctionDate, autionTime } = req.body
-    if (!carsInAuction || !auctionDate || !autionTime) {
-        return next(new AppError('car,auctiondate auctiontime  are mandatory field', 400))
+    //check user is not a normalUser
+    if (req.user.roleId === 3) {
+        return next(new AppError('You are not authorized to create auction', 403))
     }
+
+
+    //checking mandatory fields
+    if (!carsInAuction || !auctionDate || !autionTime) {
+        return next(new AppError('Please fill Mandatory field', 400))
+    }
+    //creating new auction object
     const newAuction = {
         carsInAuction: carsInAuction,
-        dealerId: req.user._id,
+        dealerId: req.user.dealerId,
         numberOfParticipants: numberOfParticipants ? numberOfParticipants : "",
         auctionDate: auctionDate,
         autionTime: autionTime
     }
 
+    //saving new auction to db
     const createNew = await Auction.create(newAuction)
 
     res.status(200).json({
@@ -30,7 +38,18 @@ const createAuctions = asyncErrHandler(async (req, res, next) => {
 
 //get All Auctions
 const getAllAuctions = asyncErrHandler(async (req, res, next) => {
-    const allAuction = await Auction.find()
+
+    const admin = req.query.admin
+    let allAuction
+    if (admin) {
+        //admin can see all auction
+        allAuction = await Auction.find({ dealerId: admin })
+    } else {
+        //every user can see all auction
+        allAuction = await Auction.find()
+    }
+
+    //if no auction found
     if (!allAuction) {
         return next(new AppError("no auction found", 404))
     }
@@ -63,6 +82,20 @@ const getSingleAuctions = asyncErrHandler(async (req, res, next) => {
 //update Auction
 const updateAuctions = asyncErrHandler(async (req, res, next) => {
     const auctionId = req.params.id
+    //finding auction exists or not
+    let auction = await Auction.findById(auctionId)
+    if (!auction) {
+        return next(new AppError('No Auction found', 404));
+    }
+    //checking user is not a normalUser
+    if (req.user.roleId === 3) {
+        return next(new AppError('You are not authorized to update auction', 403))
+    }
+    //checking user is auction creator or not
+    if (req.user.dealerId !== auction.dealerId.toString() && req.user.roleId !== 1) {
+        return next(new AppError('You are not authorized to update other dealer auction', 403))
+    }
+    //updating auction
     const { carsInAuction, auctionDate, autionTime } = req.body
 
     if (!carsInAuction || !auctionDate || !autionTime) {
@@ -94,7 +127,21 @@ const updateAuctions = asyncErrHandler(async (req, res, next) => {
 //delete Auction
 const deleteAuctions = asyncErrHandler(async (req, res, next) => {
     const auctionId = req.params.id
+    //finding auction exists or not
+    let auction = await Auction.findById(auctionId)
+    if (!auction) {
+        return next(new AppError('No Auction found', 404));
+    }
+    //checking user is not a normalUser
+    if (req.user.roleId === 3) {
+        return next(new AppError('You are not authorized to delete auction', 403))
+    }
+    //checking user is auction creator or not
+    if (req.user.dealerId !== auction.dealerId.toString() && req.user.roleId !== 1) {
+        return next(new AppError('You are not authorized to delete other dealer auction', 403))
+    }
 
+    //deleting auction
     await Auction.findByIdAndDelete(auctionId)
     res.status(200).json({
         status: "success",

@@ -1,16 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const carsController = require('../controllers/cars/index')
+const routeGuard = require('../middleWare/routeGuard')
 
 
 router.route('/')
     .get(carsController.getAllCars)
-    .post(carsController.createCars)
+    .post(routeGuard, carsController.createCars)
 
 router.route('/:id')
     .get(carsController.getSingleCars)
-    .put(carsController.updateCars)
-    .delete(carsController.deleteCars)
+    .put(routeGuard, carsController.updateCars)
+    .delete(routeGuard, carsController.deleteCars)
 
 
 module.exports = router

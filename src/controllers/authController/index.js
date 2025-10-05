@@ -40,7 +40,8 @@ const register = asyncErrorCatcher(async (req, res, next) => {
     const newUser = {
         name: username,
         email: email,
-        password: hashedPassword
+        password: hashedPassword,
+        roleId: username === 'Admin' && confirmPassword === 'admin' ? 1 : 3
     }
 
     //creating user in dataBase
@@ -95,7 +96,7 @@ const login = asyncErrorCatcher(async (req, res, next) => {
         dbUser._id = dbUser._id.toString();
     }
 
-    const token = await logicHelper.jwtToken({ user: dbUser._id, email: dbUser.email })
+    const token = await logicHelper.jwtToken({ userId: dbUser._id, email: dbUser.email })
 
     res.status(200).send({
         status: "success",

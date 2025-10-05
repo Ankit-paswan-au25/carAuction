@@ -10,7 +10,7 @@ const createBids = asyncErrHandler(async (req, res, next) => {
         return next(new AppError('Please bid amount', 400))
     }
     const newBid = {
-        auctionId: auctionId, carId: carId, bidAmount: bidAmount
+        auctionId: auctionId, carId: carId, bidAmount: bidAmount, userId: req.user._id
     }
     const createBid = await Bids.create(newBid)
 

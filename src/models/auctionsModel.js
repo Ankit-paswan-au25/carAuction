@@ -5,20 +5,17 @@ const validator = require('validator');
 
 const auctionSchema = mongoose.Schema(
     {
-        carsInAuction: {
-            type: Array,
-            required: [true, "more than one car is required"]
-        },
+        carsInAuction: [{ type: mongoose.Schema.Types.ObjectId, ref: 'cars' }],
         dealerId: {
-            type: String,
-            required: [true, 'Auction creator is important'],
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'dealers',
         },
         numberOfParticipants: {
-            type: String,
+            type: Number,
             required: [false, 'Auction creator is important'],
         },
         totalBids: {
-            type: String,
+            type: Number,
             required: [false, 'Auction creator is important'],
         },
         closureBid: {

@@ -52,8 +52,9 @@ const carsSchema = mongoose.Schema(
             select: false
         },
         creatorId: {
-            type: String,
-            required: [true, "Please enter your name"]
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         },
         isDeleted: {
             type: Boolean,

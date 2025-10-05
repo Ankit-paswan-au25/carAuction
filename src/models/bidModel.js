@@ -17,6 +17,11 @@ const bidSchema = mongoose.Schema(
             type: String,
             required: [true, 'Auction creator is important'],
         },
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+            required: [true, 'Auction creator is important'],
+        },
         finalBid: {
             type: String,
             required: [false, 'Auction creator is important'],
