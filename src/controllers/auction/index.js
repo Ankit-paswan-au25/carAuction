@@ -6,7 +6,7 @@ const Auction = require('../../models/auctionsModel')
 
 //create Auction
 const createAuctions = asyncErrHandler(async (req, res, next) => {
-    const { carsInAuction, numberOfParticipants, auctionDate, autionTime } = req.body
+    const { auctionDescription, auctionTitle, carsInAuction, numberOfParticipants, auctionDate, autionTime } = req.body
     //check user is not a normalUser
     if (req.user.roleId === 3) {
         return next(new AppError('You are not authorized to create auction', 403))
@@ -14,11 +14,13 @@ const createAuctions = asyncErrHandler(async (req, res, next) => {
 
 
     //checking mandatory fields
-    if (!carsInAuction || !auctionDate || !autionTime) {
+    if (!carsInAuction || !auctionDate || !autionTime || !auctionTitle || !auctionDescription) {
         return next(new AppError('Please fill Mandatory field', 400))
     }
     //creating new auction object
     const newAuction = {
+        auctionTitle: auctionTitle,
+        auctionDescription: auctionDescription,
         carsInAuction: carsInAuction,
         dealerId: req.user.dealerId,
         numberOfParticipants: numberOfParticipants ? numberOfParticipants : "",
