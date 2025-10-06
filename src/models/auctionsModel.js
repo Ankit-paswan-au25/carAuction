@@ -5,6 +5,14 @@ const validator = require('validator');
 
 const auctionSchema = mongoose.Schema(
     {
+        auctionTitle: {
+            type: String,
+            required: [true, 'Auction title is important'],
+        },
+        auctionDescription: {
+            type: String,
+            required: [true, 'Auction description is important'],
+        },
         carsInAuction: [{ type: mongoose.Schema.Types.ObjectId, ref: 'cars' }],
         dealerId: {
             type: mongoose.Schema.Types.ObjectId,

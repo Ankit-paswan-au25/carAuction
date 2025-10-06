@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "cross-env process.env.NODE_ENV=Development nodemon server.js",
     "prod": "cross-env process.env.NODE_ENV=Production node server.js"
   },
