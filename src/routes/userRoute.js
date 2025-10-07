@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/users/index');
+const routeGuard = require('../middleWare/routeGuard')
 
 router.route('/')
-    .get(userController.getAllUsers);
+    .get(routeGuard, userController.getAllUsers);
 router.route('/:id')
     .get(userController.getSingleUsers)
-    .put(userController.updateUsers)
-    .delete(userController.deleteUsers);
+    .put(routeGuard, userController.updateUsers)
+    .delete(routeGuard, userController.deleteUsers);
 
 module.exports = router

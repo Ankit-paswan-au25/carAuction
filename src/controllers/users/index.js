@@ -18,10 +18,14 @@ const getAllUsers = asyncErrHandler(async (req, res, next) => {
 })
 
 //get single user
-const getSingleUsers = asyncErrHandler((req, res, next) => {
+const getSingleUsers = asyncErrHandler(async (req, res, next) => {
+
+    console.log("dsdsa");
     const userId = req.params.id
 
-    const singleUser = User.findById(userId).select('-password')
+    console.log("dsdsa", userId);
+    const singleUser = await User.findById({ _id: userId })
+
     if (!singleUser) {
         return next(new AppError("No User found", 404))
     }
@@ -49,18 +53,30 @@ const updateUsers = asyncErrHandler(async (req, res, next) => {
         const hashedPassword = await bycrpt.hash(password, salt)
         updateUser.password = hashedPassword
     }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateUser, { new: true })
+    if (!updatedUser) {
+        return next(new AppError("No User found", 404))
+    }
+    res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        updatedUser
+    })
 })
 
 
 //delete user
-const deleteUsers = asyncErrHandler((req, res, next) => {
+const deleteUsers = asyncErrHandler(async (req, res, next) => {
     const userId = req.params.id
 
     //only superAdmin and user himself can update user
     if (req.user.roleId !== 1 && req.user._id.toString() !== userId) {
         return next(new AppError("You are not authorized to update user", 403))
     }
-    const deletedUser = User.findByIdAndDelete(userId)
+
+    //
+    const deletedUser = await User.findByIdAndDelete(userId)
     if (!deletedUser) {
         return next(new AppError("No User found", 404))
     }
