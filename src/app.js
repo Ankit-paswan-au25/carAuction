@@ -7,14 +7,15 @@ const app = express();
 //app dependencies middleWare
 const globalErrorCatcher = require('./utils/errorController');
 const authGuard = require('./middleWare/authGuard');
+const AppError = require('./utils/appError');
 
 //app  Routes
 const authRoute = require('./routes/authRoutes');
 const carRoute = require('./routes/carRoute');
 const auctionRoute = require('./routes/auction');
-const dealerRoute = require('./routes/dealerRoute')
-const bidRoute = require('./routes/bidRoute')
-
+const dealerRoute = require('./routes/dealerRoute');
+const bidRoute = require('./routes/bidRoute');
+const userRoute = require('./routes/userRoute');
 
 
 
@@ -35,13 +36,20 @@ app.use(authGuard)
 
 //authenticated Routes
 
-app.use('/api/v1/cars', carRoute)
+app.use('/api/v1/cars', carRoute);
 
-app.use('/api/v1/auctions', auctionRoute)
+app.use('/api/v1/auctions', auctionRoute);
 
-app.use('/api/v1/dealers', dealerRoute)
+app.use('/api/v1/dealers', dealerRoute);
 
-app.use('/api/v1/bids', bidRoute)
+app.use('/api/v1/bids', bidRoute);
+
+app.use('/api/v1/users', userRoute);
+
+app.all('/{*splat}', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+})
+
 
 
 //routes which not exist on this server

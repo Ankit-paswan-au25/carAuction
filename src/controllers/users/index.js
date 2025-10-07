@@ -71,7 +71,6 @@ const deleteUsers = asyncErrHandler((req, res, next) => {
 })
 
 module.exports = {
-    createUsers,
     getAllUsers,
     getSingleUsers,
     updateUsers,

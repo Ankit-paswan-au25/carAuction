@@ -5,6 +5,7 @@ const dbConnection = require('./src/config/dbConnection')
 process.on('uncaughtException', err => {
     console.log(err.name, err.message);
     console.log('unCaught rejection caught shutting down');
+    server.close(() => { process.exit(1) })
 })
 
 const Port = process.env.PORT
