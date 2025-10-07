@@ -15,7 +15,7 @@ put there car in auction  and any user can bid on that.
 
 ## roles and resposiblity
 
-users :
+## users :
     can register
     can login
     can be view all auction
@@ -23,7 +23,7 @@ users :
     can update there self
     can delete there self
     can view all users
-users as dealer:
+## users as dealer:
     any user can register there store
     can create cars 
     can update cars
@@ -36,7 +36,7 @@ users as dealer:
     can view single auction
     can delete auction
     ## if he bids on any car it will be as user
-superAdmin
+## superAdmin
     can do everything mentioned above
 
 
