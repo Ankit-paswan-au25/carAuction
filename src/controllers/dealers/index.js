@@ -31,6 +31,9 @@ const createDealers = asyncErrHandler(async (req, res, next) => {
 
 //get all dealers
 const getAllDealers = asyncErrHandler(async (req, res, next) => {
+    if (req.user.roleId === 3 || req.user.roleId === 2) {
+        return next(new AppError("You are not authorized to get all dealers", 403))
+    }
     const allDealers = await dealers.find()
     if (!allDealers) {
         return next(new AppError("No Dealers found", 404))
@@ -58,6 +61,16 @@ const getSingleDealers = asyncErrHandler(async (req, res, next) => {
 //update dealer
 const updateDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
+    console.log()
+    //checking user is not a normalUser
+    if (req.user.roleId === 3) {
+        return next(new AppError('You are not authorized to update dealer', 403))
+    }
+
+    //checking user is dealer or not
+    if (req.user.roleId === 2 && req.user.dealerId !== dealerId) {
+        return next(new AppError('You are not authorized to update other dealer', 403))
+    }
 
     const { storeName, storeAddress, storeAddPincode } = req.body
 
@@ -91,6 +104,16 @@ const updateDealers = asyncErrHandler(async (req, res, next) => {
 //delete dealer
 const deleteDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
+    //checking user is not a normalUser
+    if (req.user.roleId === 3) {
+        return next(new AppError('You are not authorized to delete dealer', 403))
+    }
+
+    //checking user is dealer or not
+    if (req.user.roleId === 2 && req.user.dealerId !== dealerId) {
+        return next(new AppError('You are not authorized to delete other dealer', 403))
+    }
+
     const deletedDealer = await dealers.findByIdAndDelete(dealerId)
     if (!deletedDealer) {
         return next(new AppError("No Dealer found", 404))

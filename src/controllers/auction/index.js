@@ -104,10 +104,32 @@ const updateAuctions = asyncErrHandler(async (req, res, next) => {
         return next(new AppError('Nothing to update', 400))
     }
 
+    //finding if auction exists or not
+    const existingAuction = await Auction.findById(auctionId)
+    if (!existingAuction) {
+        return next(new AppError('No Auction found', 404));
+    }
+
+    // Get existing car IDs
+    const existingCars = existingAuction.carsInAuction.map(id => id.toString());
+
+    // Filter out cars that already exist
+    const carsToAdd = carsInAuction.filter(
+        id => !existingCars.includes(id.toString())
+    );
+
+    //checking if there are new cars exists or not
+    if (carsToAdd.length === 0 && !auctionDate && !autionTime) {
+        return next(new AppError('No new cars to add', 400));
+    }
+
+
+
     let updateAuction = {}
 
     if (carsInAuction) {
-        updateAuction.carsInAuction = carsInAuction
+
+        updateAuction.carsInAuction = [...existingCars, ...carsToAdd]
     }
     if (auctionDate) {
         updateAuction.auctionDate = auctionDate
