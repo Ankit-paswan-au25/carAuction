@@ -1,7 +1,7 @@
 const asyncErrHandler = require('../../utils/asyncErrorhandler');
 const AppError = require('../../utils/appError')
 const Auction = require('../../models/auctionsModel')
-
+const mongoose = require('mongoose');
 
 
 //create Auction
@@ -65,9 +65,28 @@ const getAllAuctions = asyncErrHandler(async (req, res, next) => {
 
 //get Single Auction
 const getSingleAuctions = asyncErrHandler(async (req, res, next) => {
-    const acutionId = req.params.id
+    const auctionId = req.params.id
 
-    const userAuction = await Auction.findById(acutionId)
+    // const userAuction = await Auction.findById(acutionId)
+
+
+    const userAuction = await Auction.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(auctionId)  // ✅ use 'new' here
+            }
+        },
+        {
+            $lookup: {
+                from: 'cars',
+                localField: 'carsInAuction',
+                foreignField: '_id',
+                as: 'carInfo'
+            }
+        }
+    ]);
+
+
 
     if (!userAuction) {
         return next(new AppError('No Auction found', 404));
@@ -93,9 +112,10 @@ const updateAuctions = asyncErrHandler(async (req, res, next) => {
     if (req.user.roleId === 3) {
         return next(new AppError('You are not authorized to update auction', 403))
     }
+
     //checking user is auction creator or not
-    if (req.user.dealerId !== auction.dealerId.toString() && req.user.roleId !== 1) {
-        return next(new AppError('You are not authorized to update other dealer auction', 403))
+    if (req.user.dealerId.toString() !== auction.dealerId.toString() && req.user.roleId !== 1) {
+        return next(new AppError('You are not authorized to update other dealer auction ', 403))
     }
     //updating auction
     const { carsInAuction, auctionDate, autionTime } = req.body
