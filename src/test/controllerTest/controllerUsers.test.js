@@ -1,5 +1,8 @@
+
 jest.mock('../../utils/asyncErrorhandler', () => fn => (req, res, next) => Promise.resolve(fn(req, res, next)));
 const usersController = require('../../controllers/users');
+const User = require('../../models/usersModel');
+jest.mock('../../models/usersModel');
 
 describe('Users Controller', () => {
     let req, res, next;
@@ -10,10 +13,14 @@ describe('Users Controller', () => {
         jest.clearAllMocks();
     });
 
-    test('createUsers callable', async () => {
-        await usersController.createUsers(req, res, next);
-        expect(next).toHaveBeenCalledTimes(0);
+    test('getSingleuser returns one', async () => {
+        req.params.id = 'c1';
+        User.findById.mockResolvedValue({ _id: 'c1' }); // ✅ Correct model mock
+        await usersController.getSingleUsers(req, res, next);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+            success: true,
+            singleUser: { _id: 'c1' }
+        });
     });
 });
-
-
