@@ -19,21 +19,19 @@ const getAllUsers = asyncErrHandler(async (req, res, next) => {
 
 //get single user
 const getSingleUsers = asyncErrHandler(async (req, res, next) => {
-
-    console.log("dsdsa");
-    const userId = req.params.id
-
-    console.log("dsdsa", userId);
-    const singleUser = await User.findById({ _id: userId })
+    const userId = req.params.id;
+    const singleUser = await User.findById(userId);
 
     if (!singleUser) {
-        return next(new AppError("No User found", 404))
+        return next(new AppError("No User found", 404));
     }
+
     res.status(200).json({
         success: true,
         singleUser
-    })
-})
+    });
+});
+
 
 //update user
 const updateUsers = asyncErrHandler(async (req, res, next) => {
