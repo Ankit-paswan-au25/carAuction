@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 exports.reqValidator = asyncErrorCatcher(async (req) => {
     let routePath = `${req.route.path}`.replace("/", "");
     const { username, password, confirmPassword, email } = req.body
-    console.log("routePath", routePath)
+
     if (routePath == 'register') {
 
         //if any field is empty
@@ -29,15 +29,13 @@ exports.reqValidator = asyncErrorCatcher(async (req) => {
     }
 
 
-    console.log('tessssssssssssssssssssssssssssssssssss')
     if (routePath == 'login') {
-        console.log("lllllllllllllllllllllllllll")
+
         //if not username or Password
         if (!email || !password) {
             return { isValid: false, msg: 'Please enter your email and password', statusCode: 400 }
         }
 
-        console.log("jiiiiiiiiiiiiiiiiiiiiii")
 
         const dbUser = await User.findOne({ email: email }).select('+password');
 

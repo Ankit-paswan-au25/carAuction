@@ -61,7 +61,7 @@ const getSingleDealers = asyncErrHandler(async (req, res, next) => {
 //update dealer
 const updateDealers = asyncErrHandler(async (req, res, next) => {
     const dealerId = req.params.id
-    console.log()
+
     //checking user is not a normalUser
     if (req.user.roleId === 3) {
         return next(new AppError('You are not authorized to update dealer', 403))
