@@ -2,6 +2,7 @@ const asyncErrHandler = require('../../utils/asyncErrorhandler');
 const AppError = require('../../utils/appError')
 const Cars = require('../../models/carsModel')
 const helper = require('./helpers')
+const XLSX = require('xlsx');
 
 
 
@@ -87,7 +88,7 @@ const updateCars = asyncErrHandler(async (req, res, next) => {
 
 
     // checking car is owned by user or not
-    console.log(car.creatorId, req.user.dealerId, req.user.roleId);
+
     if (car.creatorId.toString() !== req.user.dealerId.toString() && req.user.roleId !== 1) {
         return next(new AppError('You are not authorized to update this car', 403))
     }
@@ -132,6 +133,42 @@ const deleteCars = asyncErrHandler(async (req, res, next) => {
     })
 })
 
+//bulk upload cars
+const bulkUploadCars = asyncErrHandler(async (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ status: "error", msg: "No file uploaded" });
+    }
+
+
+
+    // 1. Read the Excel file
+    const workbook = XLSX.readFile(req.file.path);
+
+    // 2. Get first sheet
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // 3. Convert sheet to JSON
+    let carsData = XLSX.utils.sheet_to_json(sheet);
+    // carsData is now an array of objects where keys are column headers
+
+
+    // 4. Add creatorId to each car
+    carsData = carsData.map(car => ({
+        ...car,
+        creatorId: req.user.dealerId
+    }));
+
+
+    // 5. Insert into MongoDB
+    const insertedCars = await Cars.insertMany(carsData);
+
+    res.status(200).json({
+        status: "success",
+        msg: `${insertedCars.length} cars uploaded successfully`,
+        data: insertedCars
+    });
+})
 
 
 
@@ -140,5 +177,6 @@ module.exports = {
     getAllCars,
     getSingleCars,
     updateCars,
-    deleteCars
+    deleteCars,
+    bulkUploadCars
 }

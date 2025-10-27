@@ -1,6 +1,9 @@
 //package dependencies
 const express = require('express');
 const app = express();
+const helmet = require('helmet');
+const cors = require('cors');
+const morgan = require('morgan');
 
 
 
@@ -33,6 +36,54 @@ app.use('/api/v1/auth', authRoute)
 
 //checking Authentication
 app.use(authGuard)
+
+//security HTTP headers
+app.use(helmet());
+
+
+//helmet coustmization---------------------------------------------
+// app.use(helmet({
+//   contentSecurityPolicy: {
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: ["'self'", "https://trusted.cdn.com"],
+//       styleSrc: ["'self'", "'unsafe-inline'"], // avoid unsafe-inline where possible
+//       imgSrc: ["'self'", "data:"],
+//       connectSrc: ["'self'", "https://api.example.com"],
+//     }
+//   },
+//   hsts: {
+//     maxAge: 31536000, // 1 year in seconds
+//     includeSubDomains: true,
+//     preload: true
+//   },
+//   referrerPolicy: { policy: "no-referrer-when-downgrade" }
+// }));
+
+//hemlet coustmization---------------------------------------------end
+
+//enable cors
+app.use(cors());
+
+//cors customization---------------------------------------------
+// const allowedOrigins = ['https://example.com', 'https://app.example.com'];
+
+// app.use(cors({
+//   origin: function(origin, callback){
+//     // Allow non-browser requests with no origin (e.g., curl, mobile)
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('CORS not allowed by policy'));
+//     }
+//   },
+//   credentials: true, // allow cookies/credentials
+//   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+//   allowedHeaders: ['Content-Type','Authorization']
+// }));
+
+//cors customization---------------------------------------------end
 
 //authenticated Routes
 
